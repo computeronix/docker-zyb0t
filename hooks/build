@@ -5,6 +5,12 @@ if [ "$SOURCE_BRANCH" == "stable" ]; then
       STABLEVERSION=$(curl https://gunthy.trade/tag/zyb0t)
       TAGNAME="$SOURCE_BRANCH-${STABLEVERSION}"
       TAG2="${DOCKER_REPO}:${TAGNAME}"
+else
+      TAG1="${DOCKER_REPO}:${SOURCE_BRANCH}"
+      BETAVERSION=$(curl https://gunthy.trade/tag/zyb0t)
+      TAGNAME="$SOURCE_BRANCH-${BETAVERSION}"
+      TAG2="${DOCKER_REPO}:${TAGNAME}"
+      BETAGB=1
 fi
 
 PLATFORM="linux/amd64,linux/arm64"
@@ -15,4 +21,5 @@ docker buildx build --push \
     -f "${DOCKERFILE_PATH}" \
     -t ${TAG2} \
     -t ${TAG1} \
+    --build-arg GBACTIVATEBETA=${BETAGB} \
     .
