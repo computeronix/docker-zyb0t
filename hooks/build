@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ "$SOURCE_BRANCH" == "stable" ]; then
+      TAG1="${DOCKER_REPO}:latest"
+      STABLEVERSION=$(curl https://gunthy.trade/tag/zyb0t)
+      TAGNAME="$SOURCE_BRANCH-${STABLEVERSION}"
+      TAG2="${DOCKER_REPO}:${TAGNAME}"
+fi
+
+PLATFORM="linux/amd64,linux/arm64"
+
+docker buildx create --name builder --driver docker-container --bootstrap --use
+docker buildx build --push \
+    --platform=${PLATFORM} \
+    -f "${DOCKERFILE_PATH}" \
+    -t ${TAG2} \
+    -t ${TAG1} \
+    .
