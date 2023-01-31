@@ -4,7 +4,7 @@ ARG GITHUBREPO="zyb0t"
 ARG GBINSTALLLOC="/opt/gunbot"
 ARG GBMOUNT="/mnt/gunbot"
 ARG ZYBOT="zyb0t-linux.zip"
-ARG GUNBOTVERSION="latest"
+ARG GUNBOTVERSION
 ARG GBPORT=5000
 ARG MAINTAINER="computeronix"
 ARG WEBSITE="https://hub.docker.com/r/computeronix/zyb0t"
@@ -47,7 +47,7 @@ RUN apt-get update && apt-get install -y wget jq unzip \
 
 
 #BUILD THE RUN IMAGE
-FROM --platform="linux/amd64" computeronix/gunbot:latest
+FROM --platform="linux/amd64" computeronix/gunbot:${GUNBOTVERSION}
 ARG MAINTAINER
 ARG WEBSITE
 ARG DESCRIPTION
