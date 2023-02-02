@@ -48,4 +48,4 @@ To acquire a license, please reach out to a [Gunbot Reseller](https://gunthy.org
 # Support
 
 -   Join the Telegram Community, ask the Gunbot School for access.
--   Submit issues/feedback/feature requests at the [GitHub site](https://github.com/computeronix/docker-gunbot).
+-   Submit issues/feedback/feature requests at the [GitHub site](https://github.com/computeronix/docker-zyb0t).
