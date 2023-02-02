@@ -39,7 +39,7 @@ Learn more about Gunbot at https://www.gunbot.com
 Review to our wiki style docs for all the latest information on the container at: https://docs.gunthy.trade/
 
 # Licensing
-zyb0t requires a license. Please contact your reseller to learn more.
+zyb0t requires a license. Please contact zy0n to inquire about a license.
 
 Gunbot requires licensing to run and please check out the latest licensing details on the Gunbot Wiki at [Gunbot About Blockchain Licensing](https://wiki.gunthy.org/about/system-requirements/license-info#blockchain-based-license-system).
 
