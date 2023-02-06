@@ -42,7 +42,6 @@ RUN apt-get update && apt-get install -y wget jq unzip \
   #inject zybot_config -> enable gunbot_directory
   && printf "jq '.gunbot_directory = \"${GBINSTALLLOC}\"' ${GBINSTALLLOC}/zybotconfig.js > /tmp/zybotconfig2.js\n" >> gunbot/custom.sh \
   && printf "cat /tmp/zybotconfig2.js > ${GBINSTALLLOC}/zybotconfig.js\n" >> gunbot/custom.sh \
-  && printf "cat ${GBINSTALLLOC}/zybotconfig.js\n" >> gunbot/custom.sh \
   && printf "fi\n" >> gunbot/custom.sh \
   #check for gunbot_console.log file
   && printf "ln -sf ${GBMOUNT}/gunbot_console.log ${GBINSTALLLOC}/gunbot_console.log\n" >> gunbot/custom.sh \
