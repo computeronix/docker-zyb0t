@@ -37,9 +37,9 @@ RUN apt-get update && apt-get install -y wget jq unzip \
   && printf "fi\n" >> gunbot/custom.sh \
   && printf "ln -sf ${GBMOUNT}/zybot ${GBINSTALLLOC}/zybot\n" >> gunbot/custom.sh \
   #check for zybotconfig.js file
-  && printf "if [ ! -f ${GBMOUNT}/zybotconfig.js ]; then \n" >> gunbot/custom.sh \
-  && printf "	echo \"{}\" > ${GBMOUNT}/zybotconfig.js\n" >> gunbot/custom.sh \
-  && printf "fi\n" >> gunbot/custom.sh \
+  #&& printf "if [ ! -f ${GBMOUNT}/zybotconfig.js ]; then \n" >> gunbot/custom.sh \
+  #&& printf "	echo \"{}\" > ${GBMOUNT}/zybotconfig.js\n" >> gunbot/custom.sh \
+  #&& printf "fi\n" >> gunbot/custom.sh \
   && printf "ln -sf ${GBMOUNT}/zybotconfig.js ${GBINSTALLLOC}/zybotconfig.js\n" >> gunbot/custom.sh \
   #inject config -> enable ZYBOT_DIR
   && printf "jq '.strategies.\"spot-mm\".ZYBOT_DIR = \"/opt/gunbot/zybot\"' ${GBINSTALLLOC}/config.js > /tmp/config2.js\n" >> gunbot/custom.sh \
