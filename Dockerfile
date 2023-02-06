@@ -45,6 +45,8 @@ RUN apt-get update && apt-get install -y wget jq unzip \
   && printf "fi\n" >> gunbot/custom.sh \
   #check for gunbot_console.log file
   && printf "ln -sf ${GBMOUNT}/gunbot_console.log ${GBINSTALLLOC}/gunbot_console.log\n" >> gunbot/custom.sh \
+  #generate machine id
+  && printf "dbus-uuidgen > /var/lib/dbus/machine-id\n" >> gunbot/custom.sh \
   #overwrite runner.sh bash script
   && printf "#!/bin/bash\n" > gunbot/runner.sh \
   #run gunbot
@@ -70,7 +72,7 @@ COPY --from=zybot-builder /tmp/gunbot ${GBINSTALLLOC}
 
 WORKDIR ${GBINSTALLLOC}
 
-RUN apt-get update && apt-get install -y chrony jq unzip openssl \
+RUN apt-get update && apt-get install -y chrony jq unzip openssl dbus \
   && rm -rf /var/lib/apt/lists/* \
   && chmod +x "${GBINSTALLLOC}/custom.sh" \
   && chmod +x "${GBINSTALLLOC}/runner.sh"
