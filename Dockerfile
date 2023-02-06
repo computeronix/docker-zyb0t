@@ -41,6 +41,11 @@ RUN apt-get update && apt-get install -y wget jq unzip \
   #&& printf "	echo \"{}\" > ${GBMOUNT}/zybotconfig.js\n" >> gunbot/custom.sh \
   #&& printf "fi\n" >> gunbot/custom.sh \
   && printf "ln -sf ${GBMOUNT}/zybotconfig.js ${GBINSTALLLOC}/zybotconfig.js\n" >> gunbot/custom.sh \
+  #check for gunbot_console.log file
+  && printf "if [ ! -f ${GBMOUNT}/gunbot_console.log ]; then \n" >> gunbot/custom.sh \
+  && printf "	touch ${GBMOUNT}/gunbot_console.log\n" >> gunbot/custom.sh \
+  && printf "fi\n" >> gunbot/custom.sh \
+  && printf "ln -sf ${GBMOUNT}/gunbot_console.log ${GBINSTALLLOC}/gunbot_console.log\n" >> gunbot/custom.sh \
   #inject config -> enable ZYBOT_DIR
   && printf "jq '.strategies.\"spot-mm\".ZYBOT_DIR = \"/opt/gunbot/zybot\"' ${GBINSTALLLOC}/config.js > /tmp/config2.js\n" >> gunbot/custom.sh \
   #overwrite runner.sh bash script
