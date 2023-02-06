@@ -74,6 +74,7 @@ WORKDIR ${GBINSTALLLOC}
 
 RUN apt-get update && apt-get install -y dbus \
   && rm -rf /var/lib/apt/lists/* \
+  && chmod +x "${GBINSTALLLOC}/custom.sh" \
   && chmod +x "${GBINSTALLLOC}/runner.sh"
 
 EXPOSE ${GBPORT}
