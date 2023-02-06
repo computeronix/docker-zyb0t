@@ -46,7 +46,7 @@ RUN apt-get update && apt-get install -y wget jq unzip \
   #overwrite runner.sh bash script
   && printf "#!/bin/bash\n" > gunbot/runner.sh \
   #run gunbot
-  && printf "${GBINSTALLLOC}/gunthy-linux &\n" >> gunbot/runner.sh \
+  && printf "${GBINSTALLLOC}/gunthy-linux > gunbot_console.log 2>&1 &\n" >> gunbot/runner.sh \
   #run zyb0t
   && printf "${GBINSTALLLOC}/zyb0t-linux\n" >> gunbot/runner.sh
 
