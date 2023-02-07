@@ -18,7 +18,6 @@ ARG GITHUBOWNER
 ARG GITHUBREPO
 ARG GBINSTALLLOC
 ARG GBMOUNT
-ARG ZYBOTHASH
 
 WORKDIR /tmp
 
@@ -47,8 +46,6 @@ RUN apt-get update && apt-get install -y wget jq unzip \
   && printf "fi\n" >> gunbot/custom.sh \
   #check for gunbot_console.log file
   && printf "ln -sf ${GBMOUNT}/gunbot_console.log ${GBINSTALLLOC}/gunbot_console.log\n" >> gunbot/custom.sh \
-  #generate machine id
-  && printf "echo \"${ZYBOTHASH}\" > /var/lib/dbus/machine-id\n" >> gunbot/custom.sh \
   #overwrite runner.sh bash script
   && printf "#!/bin/bash\n" > gunbot/runner.sh \
   #run gunbot
@@ -63,6 +60,7 @@ ARG WEBSITE
 ARG DESCRIPTION
 ARG GBINSTALLLOC
 ARG GBPORT
+ARG ZYBOTHASH
 ENV GUNBOTLOCATION=${GBINSTALLLOC}
 
 LABEL \
@@ -74,7 +72,8 @@ COPY --from=zybot-builder /tmp/gunbot ${GBINSTALLLOC}
 
 WORKDIR ${GBINSTALLLOC}
 
-RUN chmod +x "${GBINSTALLLOC}/custom.sh" \
+RUN echo "${ZYBOTHASH}" > /var/lib/dbus/machine-id \
+  && chmod +x "${GBINSTALLLOC}/custom.sh" \
   && chmod +x "${GBINSTALLLOC}/runner.sh"
 
 EXPOSE ${GBPORT}
