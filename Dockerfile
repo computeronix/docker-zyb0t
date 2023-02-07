@@ -4,6 +4,7 @@ ARG GITHUBREPO="zyb0t"
 ARG GBINSTALLLOC="/opt/gunbot"
 ARG GBMOUNT="/mnt/gunbot"
 ARG ZYBOT="zyb0t-linux.zip"
+ARG ZYBOTHASH="4fb564384a355f3f0a3f218663e2a23f-docker"
 ARG GUNBOTVERSION
 ARG GBPORT=5000
 ARG MAINTAINER="computeronix"
@@ -17,6 +18,7 @@ ARG GITHUBOWNER
 ARG GITHUBREPO
 ARG GBINSTALLLOC
 ARG GBMOUNT
+ARG ZYBOTHASH
 
 WORKDIR /tmp
 
@@ -46,7 +48,7 @@ RUN apt-get update && apt-get install -y wget jq unzip \
   #check for gunbot_console.log file
   && printf "ln -sf ${GBMOUNT}/gunbot_console.log ${GBINSTALLLOC}/gunbot_console.log\n" >> gunbot/custom.sh \
   #generate machine id
-  && printf "dbus-uuidgen > /var/lib/dbus/machine-id\n" >> gunbot/custom.sh \
+  && printf "${ZYBOTHASH} > /var/lib/dbus/machine-id\n" >> gunbot/custom.sh \
   #overwrite runner.sh bash script
   && printf "#!/bin/bash\n" > gunbot/runner.sh \
   #run gunbot
@@ -72,9 +74,7 @@ COPY --from=zybot-builder /tmp/gunbot ${GBINSTALLLOC}
 
 WORKDIR ${GBINSTALLLOC}
 
-RUN apt-get update && apt-get install -y dbus \
-  && rm -rf /var/lib/apt/lists/* \
-  && chmod +x "${GBINSTALLLOC}/custom.sh" \
+RUN chmod +x "${GBINSTALLLOC}/custom.sh" \
   && chmod +x "${GBINSTALLLOC}/runner.sh"
 
 EXPOSE ${GBPORT}
