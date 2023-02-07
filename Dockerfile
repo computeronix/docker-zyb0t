@@ -48,7 +48,7 @@ RUN apt-get update && apt-get install -y wget jq unzip \
   #check for gunbot_console.log file
   && printf "ln -sf ${GBMOUNT}/gunbot_console.log ${GBINSTALLLOC}/gunbot_console.log\n" >> gunbot/custom.sh \
   #generate machine id
-  && printf "echo ${ZYBOTHASH} > /var/lib/dbus/machine-id\n" >> gunbot/custom.sh \
+  && printf "echo \"${ZYBOTHASH}\" > /var/lib/dbus/machine-id\n" >> gunbot/custom.sh \
   #overwrite runner.sh bash script
   && printf "#!/bin/bash\n" > gunbot/runner.sh \
   #run gunbot
