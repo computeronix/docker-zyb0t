@@ -72,7 +72,8 @@ COPY --from=zybot-builder /tmp/gunbot ${GBINSTALLLOC}
 
 WORKDIR ${GBINSTALLLOC}
 
-RUN printf "${ZYBOTHASH}" > /var/lib/dbus/machine-id \
+RUN mkdir -p /var/lib/dbus/ \
+  && printf "${ZYBOTHASH}" > /var/lib/dbus/machine-id \
   && chmod +x "${GBINSTALLLOC}/custom.sh" \
   && chmod +x "${GBINSTALLLOC}/runner.sh"
 
