@@ -46,6 +46,20 @@ RUN apt-get update && apt-get install -y wget jq unzip \
   && printf "fi\n" >> gunbot/custom.sh \
   #check for gunbot_console.log file
   && printf "ln -sf ${GBMOUNT}/gunbot_console.log ${GBINSTALLLOC}/gunbot_console.log\n" >> gunbot/custom.sh \
+  #create postrun.sh
+  && printf "#!/bin/bash\n" > gunbot/postrun.sh \
+  #triple check user_modules is installed
+  && printf "if [ -L ${GBINSTALLLOC}/user_modules ] ; then\n" >> gunbot/postrun.sh \
+  && printf "   if [ -e ${GBINSTALLLOC}/user_modules ] ; then\n" >> gunbot/postrun.sh \
+  && printf "      echo Good link >/dev/null \n" >> gunbot/postrun.sh \
+  && printf "   fi\n" >> gunbot/postrun.sh \
+  && printf "elif [ -e ${GBINSTALLLOC}/user_modules ] ; then\n" >> gunbot/postrun.sh \
+  && printf "   if [ "$(ls ${GBMOUNT}/user_modules)" ]; then\n" >> gunbot/postrun.sh \
+  && printf "     echo not empty >/dev/null\n" >> gunbot/postrun.sh \
+  && printf "   else\n" >> gunbot/postrun.sh \
+  && printf "     cp -r ${GBINSTALLLOC}/user_modules ${GBMOUNT}\n" >> gunbot/postrun.sh \
+  && printf "   fi\n" >> gunbot/postrun.sh \
+  && printf " fi\n" >> gunbot/postrun.sh \
   #overwrite runner.sh bash script
   && printf "#!/bin/bash\n" > gunbot/runner.sh \
   #run gunbot
@@ -53,7 +67,9 @@ RUN apt-get update && apt-get install -y wget jq unzip \
   #change working directory to zybot
   && printf "cd ${GBINSTALLLOC}/zybot\n" >> gunbot/runner.sh \
   #run zyb0t
-  && printf "${GBINSTALLLOC}/zybot/zyb0t-linux\n" >> gunbot/runner.sh
+  && printf "${GBINSTALLLOC}/zybot/zyb0t-linux\n" >> gunbot/runner.sh \
+  #run postrun.sh
+  && printf "${GBINSTALLLOC}/postrun.sh\n" >> gunbot/runner.sh
 
 #BUILD THE RUN IMAGE
 FROM --platform="linux/amd64" computeronix/gunbot:${GUNBOTVERSION}
@@ -77,7 +93,8 @@ WORKDIR ${GBINSTALLLOC}
 RUN mkdir -p /var/lib/dbus/ \
   && printf "${ZYBOTHASH}" > /var/lib/dbus/machine-id \
   && chmod +x "${GBINSTALLLOC}/custom.sh" \
-  && chmod +x "${GBINSTALLLOC}/runner.sh"
+  && chmod +x "${GBINSTALLLOC}/runner.sh" \
+  && chmod +x "${GBINSTALLLOC}/postrun.sh"
 
 EXPOSE ${GBPORT}
 CMD ["bash","-c","${GUNBOTLOCATION}/startup.sh"]
