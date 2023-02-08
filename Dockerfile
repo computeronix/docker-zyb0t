@@ -26,23 +26,23 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y wget jq unzip \
   #remove mirrors
   && rm -rf /var/lib/apt/lists/* \
-  #pull ${ZYBOTVERSION} from official GitHub and extract linux client
+  #pull ${ZYBOTVERSION} from official GitHub and extract linux client and replace it
   && wget -q -nv -O zybot.zip $(wget -q -nv -O- https://api.github.com/repos/${GITHUBOWNER}/${GITHUBREPO}/releases/${ZYBOTVERSION} 2>/dev/null |  jq -r '.assets[] | select(.browser_download_url | contains("linux")) | .browser_download_url') \
   && unzip -d . zybot.zip \
-  && mkdir gunbot \
-  && mv zyb0t-linux gunbot \
-  #injecting into custom.sh
+  && mkdir -p gunbot/tmp \
+  && mv -f zyb0t-linux gunbot/tmp \
   #check for zybot directory
   && printf "if [ ! -d ${GBMOUNT}/zybot ]; then \n" >> gunbot/custom.sh \
   && printf "	mkdir ${GBMOUNT}/zybot\n" >> gunbot/custom.sh \
   && printf "fi\n" >> gunbot/custom.sh \
   && printf "ln -sf ${GBMOUNT}/zybot ${GBINSTALLLOC}/zybot\n" >> gunbot/custom.sh \
+  #forcefully replace zybot from gunbot/tmp to zybot directory
+  && printf "cp -f ${GBINSTALLLOC}/tmp/zyb0t-linux ${GBINSTALLLOC}/zybot\n" >> gunbot/custom.sh \
   #check for zybotconfig.js file
-  && printf "ln -sf ${GBMOUNT}/zybotconfig.js ${GBINSTALLLOC}/zybotconfig.js\n" >> gunbot/custom.sh \
-  && printf "if [ -f ${GBINSTALLLOC}/zybotconfig.js ]; then \n" >> gunbot/custom.sh \
+  && printf "if [ -f ${GBINSTALLLOC}/zybot/zybotconfig.js ]; then \n" >> gunbot/custom.sh \
   #inject zybot_config -> enable gunbot_directory
-  && printf "jq '.gunbot_directory = \"${GBINSTALLLOC}\"' ${GBINSTALLLOC}/zybotconfig.js > /tmp/zybotconfig2.js\n" >> gunbot/custom.sh \
-  && printf "cat /tmp/zybotconfig2.js > ${GBINSTALLLOC}/zybotconfig.js\n" >> gunbot/custom.sh \
+  && printf "jq '.gunbot_directory = \"${GBINSTALLLOC}\"' ${GBINSTALLLOC}/zybot/zybotconfig.js > /tmp/zybotconfig2.js\n" >> gunbot/custom.sh \
+  && printf "cat /tmp/zybotconfig2.js > ${GBINSTALLLOC}/zybot/zybotconfig.js\n" >> gunbot/custom.sh \
   && printf "fi\n" >> gunbot/custom.sh \
   #check for gunbot_console.log file
   && printf "ln -sf ${GBMOUNT}/gunbot_console.log ${GBINSTALLLOC}/gunbot_console.log\n" >> gunbot/custom.sh \
@@ -50,8 +50,10 @@ RUN apt-get update && apt-get install -y wget jq unzip \
   && printf "#!/bin/bash\n" > gunbot/runner.sh \
   #run gunbot
   && printf "${GBINSTALLLOC}/gunthy-linux > gunbot_console.log 2>&1 &\n" >> gunbot/runner.sh \
+  #change working directory to zybot
+  && printf "cd ${GBINSTALLLOC}/zybot\n" >> gunbot/runner.sh \
   #run zyb0t
-  && printf "${GBINSTALLLOC}/zyb0t-linux\n" >> gunbot/runner.sh
+  && printf "${GBINSTALLLOC}/zybot/zyb0t-linux\n" >> gunbot/runner.sh
 
 #BUILD THE RUN IMAGE
 FROM --platform="linux/amd64" computeronix/gunbot:${GUNBOTVERSION}
