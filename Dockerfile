@@ -12,7 +12,7 @@ ARG WEBSITE="https://hub.docker.com/r/computeronix/zyb0t"
 ARG DESCRIPTION="(Unofficial) zyb0t Docker Container - ${GUNBOTVERSION} - ${ZYBOTVERSION}
 
 #SCRATCH WORKSPACE FOR BUILDING IMAGE
-FROM --platform="linux/amd64" debian:bullseye AS zybot-builder
+FROM --platform="linux/amd64" debian:11 AS zybot-builder
 ARG ZYBOTVERSION
 ARG GITHUBOWNER
 ARG GITHUBREPO
