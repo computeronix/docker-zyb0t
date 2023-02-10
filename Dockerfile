@@ -32,10 +32,15 @@ RUN apt-get update && apt-get install -y wget jq unzip \
   && mkdir -p gunbot/tmp \
   && mv -f zyb0t-linux gunbot/tmp \
   #check for zybot directory
-  && printf "if [ ! -d ${GBMOUNT}/zybot ]; then \n" >> gunbot/custom.sh \
-  && printf "	mkdir ${GBMOUNT}/zybot\n" >> gunbot/custom.sh \
+  #triple check zybot directory is linked
+  && printf "if [ -L ${GBINSTALLLOC}/zybot ] ; then\n" >> gunbot/custom.sh \
+  && printf "   echo Good link >/dev/null \n" >> gunbot/custom.sh \
+  && printf "else\n" >> gunbot/custom.sh \
+  && printf "   if [ ! -d ${GBMOUNT}/zybot ]; then \n" >> gunbot/custom.sh \
+  && printf "	     mkdir ${GBMOUNT}/zybot\n" >> gunbot/custom.sh \
+  && printf "   fi\n" >> gunbot/custom.sh \
+  && printf "   ln -sf ${GBMOUNT}/zybot ${GBINSTALLLOC}/zybot\n" >> gunbot/custom.sh \
   && printf "fi\n" >> gunbot/custom.sh \
-  && printf "ln -sf ${GBMOUNT}/zybot ${GBINSTALLLOC}/zybot\n" >> gunbot/custom.sh \
   #forcefully replace zybot from gunbot/tmp to zybot directory
   && printf "cp -f ${GBINSTALLLOC}/tmp/zyb0t-linux ${GBINSTALLLOC}/zybot\n" >> gunbot/custom.sh \
   #check for zybotconfig.js file
@@ -50,16 +55,10 @@ RUN apt-get update && apt-get install -y wget jq unzip \
   && printf "#!/bin/bash\n" > gunbot/postrun.sh \
   #triple check user_modules is installed
   && printf "if [ -L ${GBINSTALLLOC}/user_modules ] ; then\n" >> gunbot/postrun.sh \
-  && printf "   if [ -e ${GBINSTALLLOC}/user_modules ] ; then\n" >> gunbot/postrun.sh \
-  && printf "      echo Good link >/dev/null \n" >> gunbot/postrun.sh \
-  && printf "   fi\n" >> gunbot/postrun.sh \
-  && printf "elif [ -e ${GBINSTALLLOC}/user_modules ] ; then\n" >> gunbot/postrun.sh \
-  && printf "   if [ "$(ls ${GBMOUNT}/user_modules)" ]; then\n" >> gunbot/postrun.sh \
-  && printf "     echo not empty >/dev/null\n" >> gunbot/postrun.sh \
-  && printf "   else\n" >> gunbot/postrun.sh \
-  && printf "     cp -r ${GBINSTALLLOC}/user_modules ${GBMOUNT}\n" >> gunbot/postrun.sh \
-  && printf "   fi\n" >> gunbot/postrun.sh \
-  && printf " fi\n" >> gunbot/postrun.sh \
+  && printf "   echo Good link >/dev/null\n" >> gunbot/postrun.sh \
+  && printf "else\n" >> gunbot/postrun.sh \
+  && printf "   cp -r ${GBINSTALLLOC}/user_modules ${GBMOUNT}\n" >> gunbot/postrun.sh \
+  && printf "fi\n" >> gunbot/postrun.sh \
   #overwrite runner.sh bash script
   && printf "#!/bin/bash\n" > gunbot/runner.sh \
   #run gunbot
