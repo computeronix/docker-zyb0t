@@ -35,7 +35,11 @@ RUN apt-get update && apt-get install -y wget jq unzip \
   #check for zybot directory
   #triple check zybot directory is linked
   && printf "if [ -L ${GBINSTALLLOC}/zybot ] ; then\n" >> gunbot/custom.sh \
-  && printf "   echo Good link >/dev/null \n" >> gunbot/custom.sh \
+  && printf "   if [ -d ${GBMOUNT}/zybot ] ; then\n" >> gunbot/custom.sh \
+  && printf "      echo Good link >/dev/null \n" >> gunbot/custom.sh \
+  && printf "   else\n" >> gunbot/custom.sh \
+  && printf "	     mkdir ${GBMOUNT}/zybot\n" >> gunbot/custom.sh \
+  && printf "   fi\n" >> gunbot/custom.sh \
   && printf "else\n" >> gunbot/custom.sh \
   && printf "   if [ ! -d ${GBMOUNT}/zybot ]; then \n" >> gunbot/custom.sh \
   && printf "	     mkdir ${GBMOUNT}/zybot\n" >> gunbot/custom.sh \
