@@ -1,4 +1,4 @@
-ARG DEBIANVERSION="bookworm"
+ARG DEBIANVERSION="bookworm-slim"
 ARG ZYBOTVERSION="latest"
 ARG GITHUBOWNER="computeronix"
 ARG GITHUBREPO="zyb0t"
